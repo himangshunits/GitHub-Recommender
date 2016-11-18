@@ -6,17 +6,11 @@ from fuzzywuzzy import fuzz
 from PreprocessManager import PreprocessManager
 import itertools as itr
 import unicodedata
+import ConfigurationManager as cfg
 
 
 
 class BiographyAnalyzer:
-
-    # Declare the file paths
-    interests_file = 'bio_corpuses/interests'
-    tech_file = 'bio_corpuses/technologies'
-    language_file = 'bio_corpuses/languages'
-    position_file = 'bio_corpuses/positions'
-    student_status_file = 'bio_corpuses/student_statuses'
 
     def __init__(self, interests_tolerance, tech_tolerance, languages_tolerance, position_tolerance, student_status_tolerance):
         self.interests_tolerance = interests_tolerance
@@ -64,11 +58,11 @@ class BiographyAnalyzer:
 
 
     def __init_dicts__(self):
-        self.interest_dict = self.get_data_from_file(BiographyAnalyzer.interests_file)
-        self.lagunages_dict = self.get_data_from_file(BiographyAnalyzer.language_file)
-        self.position_dict = self.get_data_from_file(BiographyAnalyzer.position_file)
-        self.student_status_dict = self.get_data_from_file(BiographyAnalyzer.student_status_file)
-        self.tech_dict = self.get_data_from_file(BiographyAnalyzer.tech_file)
+        self.interest_dict = self.get_data_from_file(cfg.interests_file)
+        self.lagunages_dict = self.get_data_from_file(cfg.language_file)
+        self.position_dict = self.get_data_from_file(cfg.position_file)
+        self.student_status_dict = self.get_data_from_file(cfg.student_status_file)
+        self.tech_dict = self.get_data_from_file(cfg.tech_file)
 
 
 

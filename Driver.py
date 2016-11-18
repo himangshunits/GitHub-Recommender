@@ -7,6 +7,7 @@ from PreprocessManager import PreprocessManager
 from BiographyAnalyzer import BiographyAnalyzer
 from CommitLogAnalyzer import CommitLogAnalyzer
 import sys
+import ConfigurationManager as cfg
 
 def test_popularity_model():
     print("Inside the Main Method")
@@ -128,7 +129,8 @@ def main():
 
     sys.exit(0)
 
-    bio = BiographyAnalyzer(80, 80, 80, 80, 80)
+    #interests_tolerance, tech_tolerance, languages_tolerance, position_tolerance, student_status_tolerance
+    bio = BiographyAnalyzer(cfg.interests_tolerance, cfg.tech_tolerance, cfg.languages_tolerance, cfg.position_tolerance, cfg.student_status_tolerance)
     bio_p = bio.process_bio("Interested in web and other softwares. Also workign as phd student ")
     print bio_p
 
