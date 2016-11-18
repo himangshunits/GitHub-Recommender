@@ -27,27 +27,39 @@ class CommitLogAnalyzer:
 
     def process_one_log(self, input_log, repo_info_topics):
         # Find the length
-        length = len(PreprocessManager.get_unique_words(input_log))
+        length = len(PreprocessManager.get_raw_tokenized_text(input_log))
 
         # Find structural integrity.
         self.grammar_tool.enable_spellchecking()
         problematic_matches = self.grammar_tool.check(input_log)
         corrected_text = gc.correct(input_log, problematic_matches)
-        degree_of_mismatch = 100 - fuzz.ratio(input_log, corrected_text)
-        structural_integrity_score = degree_of_mismatch * len(problematic_matches)
+        degree_of_match = fuzz.ratio(input_log, corrected_text)
+        structural_integrity_score = degree_of_match * (length - len(problematic_matches))
 
         # Check if topic is relevant
         # This is still in testing phase and not sure if it has a good impact on the final results.
         # Might be totally useless at times.
         sframe_data_for_topics = gl.SArray([PreprocessManager.get_word_counts(input_log)])
-        # Add Associations here TODO
-        topic_model = gl.topic_model.create(sframe_data_for_topics)
-        pred = topic_model.predict(sframe_data_for_topics, output_type='probability')
-        topics = topic_model.get_topics(output_type='topic_words')
+        # Add Associations here TODO: Make it proper
+        associations = gl.SFrame({'word': ['fix', 'issue', 'implement'],
+                               'topic': [0, 0, 0]})
 
-        print pred
-        print topics
+        topic_model = gl.topic_model.create(sframe_data_for_topics, associations=associations)
 
+
+
+        #pred = topic_model.predict(sframe_data_for_topics, output_type='probability')
+        topics = topic_model.get_topics()
+        # The final score is the sum of all the topic 0 scores! As they were used in associations. Gives us relevance of being a commit message!
+        topic_relevance_score = 0
+        for i in xrange(0, len(topics)):
+            curr = topics[i]
+            topic_id = curr['topic']
+            score_val = curr['score']
+            if topic_id == 0:
+                topic_relevance_score += score_val
+
+        #print topics, topic_relevance_score
 
 
 
@@ -55,10 +67,9 @@ class CommitLogAnalyzer:
         log_dict = dict()
         log_dict['text'] = input_log
         positivity = self.senti_checker.predict_row(log_dict)
-        positivity_ranking = 100 * positivity
+        positivity_score = 100 * positivity
 
-        print positivity_ranking
-
+        #print positivity_score
 
 
 
@@ -68,7 +79,11 @@ class CommitLogAnalyzer:
         error_words = list()
         for err in self.spell_master:
             error_words.append(err.word)
-        spelling_intigrity_score = len(error_words)
+        spelling_intigrity_score = length - len(error_words)
+
+
+        #return all
+        return length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_intigrity_score
 
     def process_batch_logs(self, input_log_collection, repo_info):
         # Call process_one and normalize by no. of data points

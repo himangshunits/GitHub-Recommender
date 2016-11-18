@@ -95,8 +95,10 @@ def main():
 
 
     log_analyzer = CommitLogAnalyzer()
-    data = log_analyzer.process_one_log("This is bad. My working hard peinciples are not going good@@","")
+    [length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_intigrity_score] \
+        = log_analyzer.process_one_log("Trying to fix the issue of screen alignment in the next build. Implementations in progress.","")
 
+    print length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_intigrity_score
     sys.exit(0)
 
 
