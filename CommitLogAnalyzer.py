@@ -26,7 +26,10 @@ class CommitLogAnalyzer:
 
 
     def process_one_log(self, input_log, repo_info_topics):
+        input_log = PreprocessManager.remove_non_ascii(input_log)
+        repo_info_topics = PreprocessManager.remove_non_ascii(repo_info_topics)
         # Find the length
+        # TODO : All the scores which are dependent on the length are not unbiased if not normalized! Check that
         length = len(PreprocessManager.get_raw_tokenized_text(input_log))
 
         # Find structural integrity.
@@ -41,8 +44,8 @@ class CommitLogAnalyzer:
         # Might be totally useless at times.
         sframe_data_for_topics = gl.SArray([PreprocessManager.get_word_counts(input_log)])
         # Add Associations here TODO: Make it proper
-        associations = gl.SFrame({'word': ['fix', 'issue', 'implement'],
-                               'topic': [0, 0, 0]})
+        associations = gl.SFrame({'word': ['fix', 'issue', 'implement', 'modify', 'changed', 'bug', 'error'],
+                               'topic': [0, 0, 0, 0, 0, 0, 0]})
 
         topic_model = gl.topic_model.create(sframe_data_for_topics, associations=associations)
 
@@ -58,6 +61,8 @@ class CommitLogAnalyzer:
             score_val = curr['score']
             if topic_id == 0:
                 topic_relevance_score += score_val
+
+        topic_relevance_score *= 100
 
         #print topics, topic_relevance_score
 
@@ -79,15 +84,35 @@ class CommitLogAnalyzer:
         error_words = list()
         for err in self.spell_master:
             error_words.append(err.word)
-        spelling_intigrity_score = length - len(error_words)
+        spelling_integrity_score = length - len(error_words)
 
 
         #return all
-        return length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_intigrity_score
+        return length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_integrity_score
 
     def process_batch_logs(self, input_log_collection, repo_info):
         # Call process_one and normalize by no. of data points
-        pass
+        size_of_collection = len(input_log_collection)
+        # length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_integrity_score
+        length_total = 0
+        structural_integrity_score_total = 0
+        topic_relevance_score_total = 0
+        positivity_score_total = 0
+        spelling_integrity_score_total = 0
+        print "The size of the batch = " + str(size_of_collection)
+
+        for log in input_log_collection:
+            print "Processing the log = " + str(log)
+            [length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_integrity_score] \
+                = self.process_one_log(log, repo_info)
+            length_total += length
+            structural_integrity_score_total += structural_integrity_score
+            topic_relevance_score_total += topic_relevance_score
+            positivity_score_total += positivity_score
+            spelling_integrity_score_total += spelling_integrity_score
+
+        return length_total/size_of_collection, structural_integrity_score_total/size_of_collection, topic_relevance_score_total/size_of_collection, \
+               positivity_score_total/size_of_collection, spelling_integrity_score_total/size_of_collection
 
 
 

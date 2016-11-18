@@ -1,6 +1,7 @@
 import json
 import requests
 import psycopg2
+import sys
 
 
 
@@ -18,6 +19,7 @@ class DatabaseConnector:
             print "Connected! Instance Counter = " + str(DatabaseConnector.instance_counter)
         except:
             print "Connection to Database Failed! Current instance counter value = " + str(DatabaseConnector.instance_counter)
+            sys.exit(0)
 
 
 

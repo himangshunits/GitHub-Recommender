@@ -1,3 +1,4 @@
+# coding=utf-8
 # --- Import Libraries --- #
 import pandas as pd
 import graphlab as gl
@@ -88,20 +89,44 @@ def test_collaborative_filtering_model():
     return item_sim_model, test_data
 
 
+
 def main():
     #docs = gl.SArray('https://static.turi.com/datasets/nytimes')
     #exit(0)
 
+    item_data = gl.SFrame({"my_item_id": range(4),
+                           "data_1": ["North Carolina","South Carolina","Washington","New Orleans"],
+                           "data_2": [100,150,500,50]})
+
+
+    test_data = gl.SArray(["North Carolina", 120])
+
+    m = gl.recommender.item_content_recommender.create(item_data, "my_item_id")
+    print m.recommend_from_interactions([0, 1])
+    print m.recommend(new_observation_data = test_data)
+
+
+
+    exit(0)
+
+    database_driver = DatabaseConnector()
+    commits = database_driver.get_commit_logs_for_test(100)
+    log_analyzer = CommitLogAnalyzer()
+    [length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_integrity_score] \
+        = log_analyzer.process_batch_logs(commits, "")
+
+    print length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_integrity_score
+
+    exit(0)
 
 
     log_analyzer = CommitLogAnalyzer()
-    [length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_intigrity_score] \
-        = log_analyzer.process_one_log("Trying to fix the issue of screen alignment in the next build. Implementations in progress.","")
+    [length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_integrity_score] \
+        = log_analyzer.process_one_log("Modification de la méthode CalculerDateFinContratCtrl","")
 
-    print length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_intigrity_score
+    print length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_integrity_score
+
     sys.exit(0)
-
-
 
     bio = BiographyAnalyzer(80, 80, 80, 80, 80)
     bio_p = bio.process_bio("Interested in web and other softwares. Also workign as phd student ")

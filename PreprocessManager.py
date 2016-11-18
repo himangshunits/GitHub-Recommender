@@ -13,9 +13,15 @@ class PreprocessManager:
     def __init__(self):
         pass
 
+    @staticmethod
+    def remove_non_ascii(s):
+        return "".join(i for i in s if ord(i) < 128)
+
+
     # Static method to get the word counts
     @staticmethod
     def get_word_counts(input_str, limit = 100):
+        input_str = PreprocessManager.remove_non_ascii(input_str)
         wordnet_lemmatizer = WordNetLemmatizer()
         snowball_stemmer = EnglishStemmer()
         tokenized_text = CountVectorizer().build_tokenizer()(input_str.lower())
@@ -38,6 +44,7 @@ class PreprocessManager:
     # This function just splits the words and gives the words that's all!
     @staticmethod
     def get_raw_tokenized_text(input_str):
+        input_str = PreprocessManager.remove_non_ascii(input_str)
         tokenized_text = CountVectorizer().build_tokenizer()(input_str.lower())
         return tokenized_text
 
@@ -47,6 +54,7 @@ class PreprocessManager:
     # Get the stemmed list
     @staticmethod
     def get_unique_words(input_str):
+        input_str = PreprocessManager.remove_non_ascii(input_str)
         wordnet_lemmatizer = WordNetLemmatizer()
         tokenized_text = CountVectorizer().build_tokenizer()(input_str.lower())
         tokenized_text = [word for word in tokenized_text if len(word) > 1]  # Filter some small words
