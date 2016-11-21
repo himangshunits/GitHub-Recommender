@@ -27,7 +27,8 @@ class CommitLogAnalyzer:
 
     def process_one_log(self, input_log, repo_info_topics):
         input_log = PreprocessManager.remove_non_ascii(input_log)
-        repo_info_topics = PreprocessManager.remove_non_ascii(repo_info_topics)
+        # TODO : Do we need repo info?
+        #repo_info_topics = PreprocessManager.remove_non_ascii(repo_info_topics)
         # Find the length
         # TODO : All the scores which are dependent on the length are not unbiased if not normalized! Check that
         length = len(PreprocessManager.get_raw_tokenized_text(input_log))
@@ -49,7 +50,7 @@ class CommitLogAnalyzer:
 
         topic_model = gl.topic_model.create(sframe_data_for_topics, associations=associations)
 
-
+        # TODO : Add here the match with the description. Is that useful? Maybe Future work?
 
         #pred = topic_model.predict(sframe_data_for_topics, output_type='probability')
         topics = topic_model.get_topics()
@@ -111,8 +112,8 @@ class CommitLogAnalyzer:
             positivity_score_total += positivity_score
             spelling_integrity_score_total += spelling_integrity_score
 
-        return length_total/size_of_collection, structural_integrity_score_total/size_of_collection, topic_relevance_score_total/size_of_collection, \
-               positivity_score_total/size_of_collection, spelling_integrity_score_total/size_of_collection
+        return length_total/(size_of_collection + 1), structural_integrity_score_total/(size_of_collection + 1), topic_relevance_score_total/(size_of_collection + 1), \
+               positivity_score_total/(size_of_collection + 1), spelling_integrity_score_total/(size_of_collection + 1)
 
 
 

@@ -6,6 +6,7 @@ from DatabaseConnector import DatabaseConnector
 from PreprocessManager import PreprocessManager
 from BiographyAnalyzer import BiographyAnalyzer
 from CommitLogAnalyzer import CommitLogAnalyzer
+from TrainFlowManager import TrainFlowManager
 import sys
 import ConfigurationManager as cfg
 
@@ -95,6 +96,12 @@ def main():
     #docs = gl.SArray('https://static.turi.com/datasets/nytimes')
     #exit(0)
 
+    tr = TrainFlowManager()
+    user_item_model = tr.train_for_user_item_association()
+    item_content_model = tr.train_for_item_content_similarity()
+    # Pass these models to the test flow manager.
+    exit(0)
+
     item_data = gl.SFrame({"my_item_id": range(4),
                            "data_1": ["North Carolina","South Carolina","Washington","New Orleans"],
                            "data_2": [100,150,500,50]})
@@ -109,42 +116,6 @@ def main():
 
 
     exit(0)
-
-    database_driver = DatabaseConnector()
-    commits = database_driver.get_commit_logs_for_test(100)
-    log_analyzer = CommitLogAnalyzer()
-    [length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_integrity_score] \
-        = log_analyzer.process_batch_logs(commits, "")
-
-    print length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_integrity_score
-
-    exit(0)
-
-
-    log_analyzer = CommitLogAnalyzer()
-    [length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_integrity_score] \
-        = log_analyzer.process_one_log("Modification de la méthode CalculerDateFinContratCtrl","")
-
-    print length, structural_integrity_score, topic_relevance_score, positivity_score, spelling_integrity_score
-
-    sys.exit(0)
-
-    #interests_tolerance, tech_tolerance, languages_tolerance, position_tolerance, student_status_tolerance
-    bio = BiographyAnalyzer(cfg.interests_tolerance, cfg.tech_tolerance, cfg.languages_tolerance, cfg.position_tolerance, cfg.student_status_tolerance)
-    bio_p = bio.process_bio("Interested in web and other softwares. Also workign as phd student ")
-    print bio_p
-
-
-    database_driver = DatabaseConnector()
-    commits = database_driver.get_commit_logs_for_test(50)
-    print commits
-
-    data = "Notice that due to the fact that here you are searching in a set (not in a list) the speed would be theoretically len(stop_words)/2 times faster, which is significant if you need to operate through many documents. For 5000 documents of approximately 300 words each the difference is between 1.8 seconds for my example and 20 seconds for @alvas's. P.S. in most of the cases you need to divide the text into words to perform some other classification tasks for which tf-idf is used. So most probably it would be better to use stemmer as well:"
-    freq_count = PreprocessManager.get_unique_words(data)
-
-    print freq_count
-
-
     '''[pop_model, test_data] = test_popularity_model()
 
     [item_sim_model, test_data1] = test_collaborative_filtering_model()
