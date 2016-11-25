@@ -8,6 +8,30 @@ position_file = 'bio_corpuses/positions'
 student_status_file = 'bio_corpuses/student_statuses'
 
 
+## Filenames to store the calculated tables.
+user_data_filename = "calculated_data/user_data.csv"
+user_orig_data_filename = "calculated_data/user_orig_data.csv"
+repo_data_filename = "calculated_data/repo_data.csv"
+repo_orig_data_filename = "calculated_data/repo_orig_data.csv"
+user_repo_association_filename = "calculated_data/user_repo_association.csv"
+
+
+user_data_filename_pkl = "calculated_data/user_data.pkl"
+user_orig_data_filename_pkl = "calculated_data/user_orig_data.pkl"
+repo_data_filename_pkl = "calculated_data/repo_data.pkl"
+repo_orig_data_filename_pkl = "calculated_data/repo_orig_data.pkl"
+user_repo_association_filename_pkl = "calculated_data/user_repo_association.pkl"
+
+
+
+
+
+# Log File path
+log_file_path = "logging_events.txt"
+
+
+
+
 
 # Declare the matching thresholds for fuzzy string matchings!
 # interests_tolerance, tech_tolerance, languages_tolerance, position_tolerance, student_status_tolerance
@@ -18,10 +42,11 @@ position_tolerance = 80
 student_status_tolerance = 80
 
 
-# Limits on Training Data
-train_users_limit = 10000
-train_repos_limit = 10000
-
+# Limits on Data Pulling, normally keep it high.
+train_users_limit = 100000
+train_repos_limit = 100000
+# Change this value to control how big the association matrix should be computed.
+association_processing_limit = 10000
 
 # Default Biography
 default_bio_text = "Interested in Software Development."
@@ -54,3 +79,13 @@ no_of_commits_weight = 8
 
 # Whether we have to take only the repo logs or the logs for the user and teh repo
 is_commits_from_repo_only = True
+
+
+# How many recommendations?
+k_for_repositories = 5
+k_for_users = 5
+
+
+
+# Doe we load the models from local file or compute?
+load_data_from_file = False
