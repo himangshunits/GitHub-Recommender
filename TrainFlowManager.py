@@ -9,6 +9,24 @@ import datetime
 import graphlab as gl
 import LoggingManager as log_mgr
 #import dateparser
+import numpy as np
+
+
+
+OldMax = 0
+OldMin = 0
+NewMax = 10
+NewMin = 1
+
+def rescale(OldValue):
+	OldRange = (OldMax - OldMin)
+	if OldRange == 0:
+		NewValue = NewMin
+	else:
+		NewRange = (NewMax - NewMin)
+		NewValue = (((OldValue - OldMin) * NewRange) / OldRange) + NewMin
+	return NewValue
+
 
 
 
@@ -18,22 +36,73 @@ class TrainFlowManager:
     def __init__(self):
         self.db_connector = DatabaseConnector()
         if cfg.load_data_from_file:
-            '''self.user_data = pd.read_csv(cfg.user_data_filename, sep=',', encoding='utf-8')
+            # TODO : Correct the datatypes here!
+            self.user_data = pd.read_csv(cfg.user_data_filename, sep=',', encoding='utf-8')
             self.user_data.drop(self.user_data.columns[[0]], axis=1, inplace=True)
+            #print self.user_data.dtypes
             self.user_orig_data = pd.read_csv(cfg.user_orig_data_filename, sep=',', encoding='utf-8')
             self.user_orig_data.drop(self.user_orig_data.columns[[0]], axis=1, inplace=True)
-            self.repo_data = pd.read_csv(cfg.repo_data_filename, sep=',', encoding='utf-8')
+            #print self.user_orig_data.dtypes
+
+
+            '''self.repo_data = pd.read_csv(cfg.repo_data_filename,
+                                         sep=',', encoding='utf-8', dtype={"repo_id":"object"	,"owner_id":"object"	,
+                                                                                                   "is_private":"object"	,"is_forked":"object"	,"cont_count":"object"	,
+                                                                                                   "language":"object"	,"days_from_creation":"object"	,"days_from_updation":"object"	,
+                                                                                                   "days_from_push":"object"	,"size":"object"	,"watcher_count":"object"	,
+                                                                                                   "stargazer_count":"object"	,"has_wiki":"object"	,"fork_count":"object"	,
+                                                                                                   "open_issues":"object"	,"sub_count":"object"	,"readme":"object"	,"description":"object"})'''
+
+            self.repo_data = pd.read_csv(cfg.repo_data_filename,
+                                         sep=',', encoding='utf-8', dtype={"repo_id":"int64"	,"owner_id":"int64"	,
+                                                                                                   "is_private":"bool"	,"is_forked":"bool"	,"cont_count":"int64"	,
+                                                                                                   "language":"string"	,"days_from_creation":"int64"	,"days_from_updation":"int64"	,
+                                                                                                   "days_from_push":"int64"	,"size":"int64"	,"watcher_count":"int64"	,
+                                                                                                   "stargazer_count":"int64"	,"has_wiki":"bool"	,"fork_count":"int64"	,
+                                                                                                   "open_issues":"int64"	,"sub_count":"int64"	,"readme":"string"	,"description":"string"})
+
+
             self.repo_data.drop(self.repo_data.columns[[0]], axis=1, inplace=True)
+            # Replace NaNs
+            self.repo_data['language'].fillna(' ', inplace=True)
+            self.repo_data['readme'].fillna(' ', inplace=True)
+            self.repo_data['description'].fillna(' ', inplace=True)
+
+
+            #print self.repo_data.dtypes
+            # Repo Data is a must for converting the dTypes. Do it above! Or cast all of them as object?
+
+
             self.repo_orig_data = pd.read_csv(cfg.repo_orig_data_filename, sep=',', encoding='utf-8')
             self.repo_orig_data.drop(self.repo_orig_data.columns[[0]], axis=1, inplace=True)
+            #print self.repo_orig_data.dtypes
+
+            # Replace NaNs
+            self.repo_orig_data['language'].fillna(' ', inplace=True)
+            self.repo_orig_data['readme'].fillna(' ', inplace=True)
+            self.repo_orig_data['description'].fillna(' ', inplace=True)
+
+
             self.user_repo_association = pd.read_csv(cfg.user_repo_association_filename, sep=',', encoding='utf-8')
-            self.user_repo_association.drop(self.user_repo_association.columns[[0]], axis=1, inplace=True)'''
+            self.user_repo_association.drop(self.user_repo_association.columns[[0]], axis=1, inplace=True)
+            self.user_repo_association = self.user_repo_association[self.user_repo_association['rating'] <= cfg.rating_matrix_removal_limit]
+            self.user_repo_association['rating'] = self.user_repo_association['rating'].apply(rescale)
+
+            # TODO : DropNA?
+            # Print the shapes.
+            print "user_data.shape" + str(self.user_data.shape)
+            print "user_orig_data.shape" + str(self.user_orig_data.shape)
+            print "repo_data.shape" + str(self.repo_data.shape)
+            print "repo_orig_data.shape" + str(self.repo_orig_data.shape)
+            print "user_repo_association.shape" + str(self.user_repo_association.shape)
+
+            #print self.user_repo_association.dtypes
             # Load from Pickle.
-            self.user_data = pd.read_pickle(cfg.user_data_filename_pkl)
+            '''self.user_data = pd.read_pickle(cfg.user_data_filename_pkl)
             self.user_orig_data = pd.read_pickle(cfg.user_orig_data_filename_pkl)
             self.repo_data = pd.read_pickle(cfg.repo_data_filename_pkl)
             self.repo_orig_data = pd.read_pickle(cfg.repo_orig_data_filename_pkl)
-            self.user_repo_association = pd.read_pickle(cfg.user_repo_association_filename_pkl)
+            self.user_repo_association = pd.read_pickle(cfg.user_repo_association_filename_pkl)'''
         else:
             self.user_orig_data = self.db_connector.get_user_data(limit=cfg.train_users_limit)
             self.repo_orig_data = self.db_connector.get_repo_data(limit=cfg.train_repos_limit)
@@ -48,6 +117,9 @@ class TrainFlowManager:
                                     cfg.position_tolerance, cfg.student_status_tolerance)
             self.commit_log_analyzer = CommitLogAnalyzer()
             self.create_datasets()
+            self.user_repo_association = self.user_repo_association[self.user_repo_association['rating'] <= cfg.rating_matrix_removal_limit]
+            self.user_repo_association['rating'] = self.user_repo_association['rating'].apply(rescale)
+
 
     # this API will give the internal stuff of this class
     def get_data_structures(self):
@@ -111,22 +183,33 @@ class TrainFlowManager:
         train_data = gl.SFrame(self.user_repo_association)
 
         # Train Model
-        self.item_sim_model = gl.item_similarity_recommender.create(train_data, user_id='user_id', item_id='repo_id',
-                                                               target='rating', similarity_type='pearson', verbose=True)
+        # factorization_recommender???? TODO : item_similarity_recommender
+        self.item_sim_model = gl.factorization_recommender.create(train_data, user_id='user_id', item_id='repo_id',
+                                                               target='rating', verbose=True)
+        #print self.item_sim_model.evaluate(train_data)
         return self.item_sim_model
 
 
     # This API will train a model for item similarity.
     def train_for_item_content_similarity(self):
-        sliced_columns = ["repo_id", "is_private", "is_forked", "cont_count", "language", "days_from_creation",
+        sliced_columns = ["repo_id", "owner_id", "is_private", "is_forked", "cont_count", "language", "days_from_creation",
                           "days_from_updation", "days_from_push", "size", "watcher_count",
                           "stargazer_count", "has_wiki", "fork_count", "open_issues",
                           "sub_count"]
         sliced_repo_data = self.repo_data[sliced_columns]
+        sliced_repo_data.rename(index=str, columns={"owner_id": "user_id"}, inplace=True)
+        # TODO: Rename owner_id to user_id
+        #print sliced_repo_data.dtypes
+        #print sliced_repo_data.isnull()
         train_data = gl.SFrame(sliced_repo_data)
         train_data_observation = gl.SFrame(self.user_repo_association)
         self.item_content_model = gl.recommender.item_content_recommender.create(item_data=train_data, item_id='repo_id',
-                                                                                 observation_data=train_data_observation, user_id='user_id', target='rating', verbose=True)
+                                                                                observation_data=train_data_observation, user_id='user_id', target='rating', verbose=True)
+        '''self.item_content_model = gl.recommender.item_content_recommender.create(item_data=train_data,
+                                                                                 item_id='repo_id', user_id='user_id', verbose=True)'''
+
+        # Evaluate Model on training dataset
+        #print self.item_content_model.evaluate(train_data_observation)
         return self.item_content_model
 
 
@@ -135,6 +218,7 @@ class TrainFlowManager:
         '''["repo_id", "owner_id", "is_private", "is_forked", "cont_count", "language", "days_from_creation",
                                                    "days_from_updation", "days_from_push", "size", "watcher_count", "stargazer_count", "has_wiki", "fork_count", "open_issues",
                                                    "sub_count",  "readme", "description"]'''
+
         for index, row in self.repo_orig_data.iterrows():
             print row['repo_id'], row['repo_name']
             self.repo_data.set_value(index, 'repo_id', row['repo_id'])
@@ -169,6 +253,7 @@ class TrainFlowManager:
             self.repo_data.set_value(index, 'description', self.__none_checker_string(row['readme']))
             # TODO : Enable the below line
             #self.repo_data.set_value(index, 'description', self.__none_checker_string(row['description']))
+        #print self.repo_data.dtypes
 
 
 
@@ -242,6 +327,7 @@ class TrainFlowManager:
                 cumulative_score =  a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8 + a9 + a10 + a11 + a12 + a13 + a14 + a15 + a16
                 # Insert the cumulative score to the 3rd column
                 self.user_repo_association.set_value(index, 'rating', cumulative_score)
+                association_processing_limit -= 1
             except Exception as e:
                 error = "Error in synthesizing association data. The error is = " + str(e) + "Other info :: Row Data = " + str(row)
                 print error

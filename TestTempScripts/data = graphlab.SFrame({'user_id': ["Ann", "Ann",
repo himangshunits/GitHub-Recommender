@@ -1,0 +1,6 @@
+data = graphlab.SFrame({'user_id': ["Ann", "Ann", "Ann", "Brian", "Brian", "Brian"],
+                        'item_id': ["Item1", "Item2", "Item3", "Item4", "Item5", "Item6"],
+                        'rating': [1, 3, 2, 5, 4, 2]})
+m = graphlab.factorization_recommender.create(data, target='rating')
+
+recommendations = m.recommend()

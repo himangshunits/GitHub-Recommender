@@ -82,10 +82,14 @@ is_commits_from_repo_only = True
 
 
 # How many recommendations?
-k_for_repositories = 5
-k_for_users = 5
-
+k_for_repositories = 10
+k_for_users = 10
 
 
 # Doe we load the models from local file or compute?
-load_data_from_file = False
+load_data_from_file = True
+
+
+
+# Rating outliers removal, 80 is a good number from where it becomes a normal.
+rating_matrix_removal_limit = 70

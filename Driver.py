@@ -14,8 +14,9 @@ import copy
 import ConfigurationManager as cfg
 
 
+
 # The Server!
-app_flask = Flask(__name__)
+#app_flask = Flask(__name__)
 
 def test_collaborative_filtering_model():
     r_cols = ['user_id', 'movie_id', 'rating', 'unix_timestamp']
@@ -65,61 +66,33 @@ def main():
     tr.train_for_user_item_association()
     tr.train_for_item_content_similarity()
     tf = TestFlowManager(tr)
-    res = tf.get_repo_recommendation_from_username("izuzero", "USER_ITEM")
-    print "test Flow Manager updated! Going to start server."
-    print "Recommendations for user =" + str(res)
+    res_item = tf.get_repo_recommendation_from_username("tamil1", "USER_ITEM")
+    #print "Recommendations for user =" + str(res_item.to_json(orient='records'))
+    print "Recommendations for user =" + str(res_item)
+
+    print "###########################################"
+
+    res_item = tf.get_repo_recommendation_from_username("nilegsalcin", "USER_ITEM")
+    # print "Recommendations for user =" + str(res_item.to_json(orient='records'))
+    print "Recommendations for user =" + str(res_item)
+
+    print "###########################################"
+
+
+    res_content = tf.get_repo_recommendation_from_username("tamil1", "ITEM_CONTENT")
+    #print "Recommendations for user =" + str(res_content.to_json(orient='records'))
+    print "Recommendations for user =" + str(res_content)
+
+    res_content = tf.get_repo_recommendation_from_username("nilegsalcin", "ITEM_CONTENT")
+    # print "Recommendations for user =" + str(res_content.to_json(orient='records'))
+    print "Recommendations for user =" + str(res_content)
 
     #app_flask.run(host='0.0.0.0', debug=True)
 
 
-    # TODO :: Save the models here once everything is final.
+    # TODO :: Send the above JSONs as the result to the WebApp
     # Pass these models to the test flow manager.
-    exit(0)
-
-
-    '''[pop_model, test_data] = test_popularity_model()
-
-    [item_sim_model, test_data1] = test_collaborative_filtering_model()
-
-    model_performance = gl.compare(test_data, [pop_model, item_sim_model])
-    gl.show_comparison(model_performance, [pop_model, item_sim_model])'''
-
-    item_data = gl.SFrame({"my_item_id": range(4),
-                           "data_1": ["North Carolina", "South Carolina", "Washington", "New Orleans"],
-                           "data_2": [100, 150, 500, 50]})
-
-    obs_data = gl.SFrame({"user_id": [0, 0, 0, 1, 1, 1, 2, 2],
-                          "my_item_id": [0, 1, 2, 0, 1, 2, 1, 2],
-                          "rating": [2, 3, 4, 1, 3, 4, 5, 0]})
-
-    test_data = gl.SArray(["North Carolina", 120])
-
-    m1 = gl.recommender.item_content_recommender.create(item_data=item_data, item_id='my_item_id',
-                                                        observation_data=obs_data,
-                                                        user_id='user_id', target='rating')
-
-    print m1.recommend_from_interactions([0, 1])
-    print m1.recommend(new_observation_data=test_data)
-
-
-    exit(0)
-
-
-def get_json_data_from_results(result):
-    # Results in Pandas Frame of signature 'html_url', 'repo_name', 'description', 'score', 'rank'
-    # TODO implement this
-    return jsonify({'repo_name':"awesome repo"})
-
-
-'''@app_flask.route('/api/get_repo_recommendation/<uuid>', methods=['GET', 'POST'])
-def add_message(uuid):
-    print "Request Received = " + str(uuid)
-    #res = test_flow_manager_global.get_repo_recommendation_from_username(str(uuid), "USER_ITEM")
-    json_data_to_send = get_json_data_from_results(res)
-    return json_data_to_send'''
 
 
 if __name__ == '__main__':
     main()
-
-

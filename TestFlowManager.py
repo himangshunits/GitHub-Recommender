@@ -14,14 +14,17 @@ class TestFlowManager:
     def get_repo_recommendation_from_username(self, username, method):
         #  The train has :: self.user_orig_data, self.repo_orig_data, self.user_data, self.repo_data
         # Slice out the test_user
+        #print self.train_flow_manager.user_orig_data.head(n=30)
         test_user = self.train_flow_manager.user_orig_data[self.train_flow_manager.user_orig_data['user_login'] == username]
         user_id = test_user['user_id'].iloc[0]
 
         if method == "USER_ITEM":
             item_sim_recommendation = self.train_flow_manager.item_sim_model.recommend(users=[user_id], k=cfg.k_for_repositories)
+            #print self.train_flow_manager.item_sim_model.recommend()
         elif method == "ITEM_CONTENT":
             # TODO : Implement this.
-            pass
+            item_sim_recommendation = self.train_flow_manager.item_content_model.recommend(users=[user_id],
+                                                                                       k=cfg.k_for_repositories)
         else:
             print "Unknown prediction method! Never Never Get here = " + method
 
