@@ -503,3 +503,7 @@ fieldset[disabled] .btn-success.active {
   opacity: 0;
   display: none;
 }
+.panel-default > .panel-heading-custom {
+    background: #ff0000; color: red;
+}
+

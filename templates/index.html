@@ -16,6 +16,7 @@
 
     <!-- Theme CSS -->
     <link href="/static/css/freelancer.min.css" rel="stylesheet">
+    <link href="/static/css/mycss.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="/static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
@@ -28,6 +29,9 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
 
 </head>
 
@@ -96,12 +100,40 @@
                         <a href="{{ url_for('login') }}" class="btn btn-lg btn-outline">
                             <i class="fa fa-github"></i> Login With Github
                         </a>
-                    {% endif %}
-                    
+
+                        <p> OR</p>
+                         <a href="#" onclick="$('#formDiv').removeClass('hidden').toggle();" class="btn btn-lg btn-outline">
+                            <i class="fa fa-search"></i> Search With Username
+                        </a>
+                        <div style="height:50px;"></div>
+
+                    <!-- Inline Form -->
+                    <div id = "formDiv" class="hidden">
+                        <form class="form-inline" action="{{url_for('getInputData')}}" method="post">
+                          <div class="form-group">
+                            <label for="username">Username</label>&nbsp;&nbsp;&nbsp;
+                            <input type="text" class="form-control" id="username" placeholder="Username" name = "username">
+                          </div> &nbsp;&nbsp;&nbsp;&nbsp;
+                          <label class="custom-control custom-radio">
+                              <input id="useritem" name="radio" type="radio" class="custom-control-input" value="USER_ITEM" checked>
+                              <span class="custom-control-indicator"></span>
+                              <span class="custom-control-description">User Item</span>
+                            </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <label class="custom-control custom-radio">
+                              <input id="itemcontent" name="radio" type="radio" class="custom-control-input" value="ITEM_CONTENT">
+                              <span class="custom-control-itemcontent"></span>
+                              <span class="custom-control-description">Item Content</span>
+                            </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                          <button type="submit" class="btn btn-primary" name = "submit" value = "submit">Get Recommendation</button>
+                        </form>
+                    </div>
+                    <!-- End Inline Form -->
+                    {% endif %}                   
                 </div>
                 </div>
             </div>
         </div>
+           
     </header>
 
     <!-- Portfolio Grid Section -->
@@ -565,7 +597,7 @@
     <script src="/static/js/contact_me.js"></script>
 
     <!-- Theme JavaScript -->
-    <script src="/static/js/freelancer.min.js"></script>
+    <script src="/static/js/freelancer.js"></script>
 
 </body>
 
