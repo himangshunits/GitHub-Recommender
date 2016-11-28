@@ -15,3 +15,4 @@ nltk.stem.wordnet(Not sure if this comes with the NLTK library itself.)
 requests
 datetime
 dateparser
+Flask-OAuthlib
