@@ -93,3 +93,10 @@ load_data_from_file = True
 
 # Rating outliers removal, 80 is a good number from where it becomes a normal.
 rating_matrix_removal_limit = 70
+
+
+
+
+# Set the limit on repo for new user
+new_user_repo_limit = 10
+new_user_commit_limit = 10

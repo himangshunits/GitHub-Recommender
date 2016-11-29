@@ -54,13 +54,13 @@ item_sim_model = gl.recommender.factorization_recommender.create(train_obs, item
 print "Model Built !"
 #print item_sim_model.evaluate(train_obs_data)
 
-eval_model = item_sim_model.evaluate(test_obs)
+#eval_model = item_sim_model.evaluate(test_obs)
 #pre_recall = item_sim_model.evaluate_precision_recall(sf_test)
 #rmse = item_sim_model.evaluate_rmse(sf_test, target='rating')
 
-
-print item_sim_model.recommend(users=[8675834])
-print item_sim_model.recommend(users=[16546086])
-print eval_model
+print test_obs[:20]
+print item_sim_model.recommend(users=[303], new_observation_data=test_obs)
+#print item_sim_model.recommend(users=[16546086])
+#print eval_model
 #print pre_recall
 #print rmse

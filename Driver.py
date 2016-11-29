@@ -4,6 +4,7 @@ from TrainFlowManager import TrainFlowManager
 from TestFlowManager import TestFlowManager
 import ConfigurationManager as cfg
 import flask
+from CustomExceptions import UnknownUserException, UserIdAbsetInNewDataError
 
 # This is the entry point and the instance must be owned by the calling program.
 
@@ -38,8 +39,17 @@ class Driver:
 
     def get_recommendations_for_username(self, username, method="USER_ITEM"):
         try:
-            res_item = self.test_flow_manager.get_repo_recommendation_from_username(username, method)
+            res_item = self.test_flow_manager.get_repo_recommendation_from_username_in_database(username, method)
             return res_item.to_json(orient='records')
+        except UnknownUserException as e:
+            # First try synthesizing for the new user!
+            print "New User Detected! Going to synthesize information for new user! Message = " + str(e)
+            res_item = self.test_flow_manager.get_repo_recommendation_from_username_new(username, method)
+            return res_item.to_json(orient='records')
+        except UserIdAbsetInNewDataError as e:
+            result_message = "Error Occurred. Was unexpected. Chec the  new Data pulled from new id ! Error Message = " + str(e)
+            res_json = flask.jsonify({"error": result_message})
+            return res_json
         except Exception as e:
             result_message = "Error Occurred. Please Enter Valid User ID ! Error Message = " + str(e)
             res_json = flask.jsonify({"error": result_message})
