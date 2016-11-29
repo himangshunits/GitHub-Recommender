@@ -67,72 +67,14 @@
 
     <!-- Header -->
     <header>
-        <div>
-           
-            {% if repos %}
              <div class="container">
-                <img class="img-responsive" src="/static/img/ironcat.png" alt="" height="300" width="300">
-                <div class="page-header">
-                <h1 class="text-center">Hola!</h1>
+              <div class="page-header">
+                <h1 class="text-center">Not a valid User!</h1>
               </div>
-              <h2 class="text-center">Here is your recommendations!</h2>              
-              <div class="container">
-	              {% for r in repos %}
-	                <hr class="star-light">
-				  
-	                <div class="row stylish-panel">
-	                  <div class="col-md">
-	                    <div>
-	                      <img src="http://lorempixel.com/200/200/abstract/3/" alt="Texto Alternativo" class="img-circle img-thumbnail">
-	                      <h2>Name:-{{r.repo_name}}</h2>
-	                      <p>Description:- {{r.description}}
-	                      </p>
-	                      <p>Rank:- {{r.rank}}
-	                      </p>
-	                      <p>Score:- {{r.score}}
-	                      </p>
-	                      <a href="{{r.html_url}}" class="btn btn-primary" title="Go to Repo">Go To Repo»</a>
-	                    </div>
-	                  </div>
-	                 
-	                </div>
-	              <!--   <div class="row stylish-panel">
-	                  <div class="col-md-4">
-	                    <div>
-	                      <img src="http://lorempixel.com/200/200/abstract/4/" alt="Texto Alternativo" class="img-circle img-thumbnail">
-	                      <h2>Webdesigner</h2>
-	                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	                        tempor incididunt ut labore et dolore magna aliqua.
-	                      </p>
-	                      <a href="#" class="btn btn-primary" title="See more">See works »</a>
-	                    </div>
-	                  </div>
-	                  <div class="col-md-4">
-	                    <div>
-	                      <img src="http://lorempixel.com/200/200/abstract/5/" alt="Texto Alternativo" class="img-circle img-thumbnail">
-	                      <h2>Photographer</h2>
-	                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	                        tempor incididunt ut labore et dolore magna aliqua.
-	                      </p>
-	                      <a href="#" class="btn btn-primary" title="See more">See works »</a>
-	                    </div>
-	                  </div>
-	                  <div class="col-md-4">
-	                    <div>
-	                      <img src="http://lorempixel.com/200/200/abstract/6/" alt="Texto Alternativo" class="img-circle img-thumbnail">
-	                      <h2>Copywriter</h2>
-	                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	                        tempor incididunt ut labore et dolore magna aliqua.
-	                      </p>
-	                      <a href="#" class="btn btn-primary" title="See more">See works »</a>
-	                    </div>
-	                  </div>
-	                </div> -->
-	               {% endfor %} 
-	            </div>
+               <img class="img-responsive" src="/static/img/nobody.jpg" alt="">
+
             </div>
             <!-- /container -->
-        {% endif %}
     </header>
 
    

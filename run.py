@@ -137,11 +137,18 @@ def getInputData():
     methodName = request.form['radio']
     print(username)
     print(methodName)
-    #result = my_dr_global.get_recommendations_for_username("tamil1", "USER_ITEM")
-    result = my_dr_global.get_recommendations_for_username(username, methodName)
-    repos = json.loads(result, object_hook=_decode_dict)
-    session['repos'] = repos
-    return redirect(url_for('repos'))
+    try:
+        #result = my_dr_global.get_recommendations_for_username("tamil1", "USER_ITEM")
+        result = my_dr_global.get_recommendations_for_username(username, methodName)
+        repos = json.loads(result, object_hook=_decode_dict)
+        # allKeys = repos.keys()
+        # if 'error' in allKeys:
+        #     return redirect(url_for('error'))
+        print(repos)
+        session['repos'] = repos
+        return redirect(url_for('repos'))
+    except:
+        return redirect(url_for('error'))
 
 # for logged in user
 
@@ -150,11 +157,31 @@ def make_recommendations():
     me = (github.get('user').data)
     username = convert(me)['login']
 
-    #result = my_dr_global.get_recommendations_for_username("tamil1", "USER_ITEM")
-    result = my_dr_global.get_recommendations_for_username(username, "USER_ITEM")
-    repos = json.loads(result, object_hook=_decode_dict)
-    session['repos'] = repos
-    return redirect(url_for('repos'))
+    try:
+        #result = my_dr_global.get_recommendations_for_username("tamil1", "USER_ITEM")
+        result = my_dr_global.get_recommendations_for_username(username, "USER_ITEM")
+        repos = json.loads(result, object_hook=_decode_dict)
+        # allKeys = repos.keys()
+        # if 'error' in allKeys:
+        #     return redirect(url_for('error'))
+        print(repos)
+        session['repos'] = repos
+        return redirect(url_for('repos'))
+    except:
+        return redirect(url_for('error'))
+
+
+# 404
+
+# for logged in user
+
+@app.route('/404')
+def fourZeroFour():
+    return render_template('404.html')
+
+@app.route('/error')
+def error():
+    return render_template('error.html')
 
 
 if __name__ == "__main__":

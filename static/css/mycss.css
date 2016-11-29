@@ -24,3 +24,6 @@
     -ms-transform: rotate(360deg);
     transform: rotate(360deg);
 }
+.bodybg{
+       background-color: #18BC9C;
+}
