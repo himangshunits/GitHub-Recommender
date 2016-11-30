@@ -192,10 +192,11 @@ class TrainFlowManager:
 
     # This API will train a model for item similarity.
     def train_for_item_content_similarity(self):
-        sliced_columns = ["repo_id", "owner_id", "is_private", "is_forked", "cont_count", "language", "days_from_creation",
+        '''sliced_columns = ["repo_id", "owner_id", "is_private", "is_forked", "cont_count", "language", "days_from_creation",
                           "days_from_updation", "days_from_push", "size", "watcher_count",
                           "stargazer_count", "has_wiki", "fork_count", "open_issues",
-                          "sub_count"]
+                          "sub_count"]'''
+        sliced_columns = ["owner_id", "repo_id", "is_forked", "cont_count", "language", "size", "has_wiki"]
         sliced_repo_data = self.repo_data[sliced_columns]
         sliced_repo_data.rename(index=str, columns={"owner_id": "user_id"}, inplace=True)
         # TODO: Rename owner_id to user_id

@@ -250,11 +250,13 @@ class TestFlowManager:
 
         test_association_data = gl.SFrame(self.user_repo_association_test)
 
-        sliced_columns = ["owner_id", "is_private", "is_forked", "cont_count", "language",
+        '''sliced_columns = ["owner_id", "is_private", "is_forked", "cont_count", "language",
                           "days_from_creation",
                           "days_from_updation", "days_from_push", "size", "watcher_count",
                           "stargazer_count", "has_wiki", "fork_count", "open_issues",
-                          "sub_count"]
+                          "sub_count"]'''
+
+        sliced_columns = ["owner_id", "is_forked", "cont_count", "language", "size", "has_wiki"]
         sliced_repo_data = self.repo_data_test[sliced_columns]
         sliced_repo_data.rename(index=str, columns={"owner_id": "user_id"}, inplace=True)
         # TODO: Rename owner_id to user_id
@@ -269,10 +271,11 @@ class TestFlowManager:
         elif method == "ITEM_CONTENT":
             # TODO : Implement this.
             try:
-                item_sim_recommendation = self.train_flow_manager.item_content_model.recommend(users=[user_id], new_observation_data=test_association_data, new_item_data=test_repo_data,
+                item_sim_recommendation = self.train_flow_manager.item_content_model.recommend(users=[user_id], new_item_data=test_repo_data, new_observation_data=test_association_data,
                                                                                        k=cfg.k_for_repositories)
             except Exception as e :
                 error_string = "Error = " + str(e)
+                print error_string
         else:
             print "Unknown prediction method! Never Never Get here = " + method
             item_sim_recommendation = None
