@@ -18,8 +18,8 @@ def rescale(OldValue):
 
 
 #user_repo_association.csv
-user_repo_association = pd.read_csv("movie_data.csv", sep=',', encoding='utf-8')
-#user_repo_association.drop(user_repo_association.columns[[0]], axis=1, inplace=True)
+user_repo_association = pd.read_csv("user_repo_association.csv", sep=',', encoding='utf-8')
+user_repo_association.drop(user_repo_association.columns[[0]], axis=1, inplace=True)
        
 
 print user_repo_association.shape
@@ -27,7 +27,7 @@ print user_repo_association.shape
 # Remove the extremem points to stay away from power law.
 #rating <80
 
-user_repo_association = user_repo_association[user_repo_association['rating'] < 90]
+user_repo_association = user_repo_association[user_repo_association['rating'] < 70]
 
 OldMax = user_repo_association['rating'].max()
 OldMin = user_repo_association['rating'].min()
@@ -58,9 +58,9 @@ print "Model Built !"
 #pre_recall = item_sim_model.evaluate_precision_recall(sf_test)
 #rmse = item_sim_model.evaluate_rmse(sf_test, target='rating')
 
-print test_obs[:20]
-print item_sim_model.recommend(users=[303], new_observation_data=test_obs)
-#print item_sim_model.recommend(users=[16546086])
+
+print item_sim_model.recommend(users=[8675834])
+print item_sim_model.recommend(users=[16546086])
 #print eval_model
 #print pre_recall
 #print rmse

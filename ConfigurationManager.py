@@ -92,7 +92,7 @@ load_data_from_file = True
 
 
 # Rating outliers removal, 80 is a good number from where it becomes a normal.
-rating_matrix_removal_limit = 70
+rating_matrix_removal_limit = 80
 
 
 
